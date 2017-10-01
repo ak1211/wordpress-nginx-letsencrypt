@@ -17,7 +17,6 @@
     organizational_unit_name:
     email_address:
     common_name: "{{ domain }}"
-    force: yes
 
 - name: 証明書署名要求を Let's Encrypt 認証局に提出する
   letsencrypt:
