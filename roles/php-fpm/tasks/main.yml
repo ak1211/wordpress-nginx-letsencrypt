@@ -1,0 +1,50 @@
+---
+- name: php-fpm パッケージをインストールする
+  apt: name={{ item }} state=present update_cache=yes
+  with_items:
+    - php
+    - php-fpm
+    - php-enchant
+    - php-mbstring
+    - php-mysql
+
+- name: WordPress 用 php の設定をする
+  lineinfile:
+    dest: /etc/php/7.0/fpm/php.ini
+    state: present
+    regexp: "^{{ item.before }} ="
+    insertafter: "^;{{ item.before }} ="
+    line: "{{ item.after }}"
+  with_items:
+    - { before: "post_max_size", after: "post_max_size = 128M" }
+    - { before: "upload_max_filesize", after: "upload_max_filesize = 128M" }
+    - { before: "default_charset", after: 'default_charset = "UTF-8"' }
+    - { before: "mbstring.language", after: "mbstring.language = Japanese" }
+    - { before: "date.timezone", after: 'date.timezone = "Asia/Tokyo"' }
+  notify:
+    - restart php7.0-fpm
+
+- name: WordPress, Nginx 用 php-fpm の設定をする
+  lineinfile:
+    dest: /etc/php/7.0/fpm/pool.d/www.conf
+    state: present
+    regexp: "^{{ item.before }} ="
+    insertafter: "^;{{ item.before }} ="
+    line: "{{ item.after }}"
+  with_items:
+    - { before: "listen", after: "listen = {{ nginx.listen }}" }
+    - { before: "listen.owner", after: "listen.owner = {{ nginx.owner }}" }
+    - { before: "listen.group", after: "listen.group = {{ nginx.group }}" }
+    - { before: "listen.mode", after: "listen.mode = 0660" }
+    - { before: "chdir", after: "chdir = {{ nginx.webroot }}" }
+    - { before: "pm", after: "pm = dynamic" }
+    - { before: "pm.max_children", after: "pm.max_children = 12" }
+    - { before: "pm.start_servers", after: "pm.start_servers = 2" }
+    - { before: "pm.min_spare_servers", after: "pm.min_spare_servers = 1" }
+    - { before: "pm.max_spare_servers", after: "pm.max_spare_servers = 5" }
+    - { before: "pm.max_requests", after: "pm.max_requests = 500" }
+    - { before: "php_admin_value\\[error_log\\]", after: "php_admin_value[error_log] = /var/log/fpm-php.www.log" }
+    - { before: "php_admin_flag\\[log_errors\\]", after: "php_admin_flag[log_errors] = on" }
+  notify:
+    - restart php7.0-fpm
+

@@ -1,0 +1,20 @@
+---
+- name: Install WordPress, MariaDB, Nginx, and PHP-FPM
+  hosts: webserver
+  remote_user: ansibleuser
+  become: yes
+  become_method: sudo
+  roles:
+    - role: common
+      tags: common
+    - role: mariadb
+      tags: mariadb
+    - role: nginx 
+      tags: nginx
+    - role: letsencrypt
+      tags: letsencrypt
+    - role: php-fpm
+      tags: php-fpm
+    - role: wordpress
+      tags: wordpress
+

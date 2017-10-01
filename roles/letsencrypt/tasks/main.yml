@@ -1,0 +1,57 @@
+---
+- name: 必要なパッケージをインストールする
+  pip: name={{ item }} state=present
+  with_items:
+    - pyOpenSSL
+
+- name: /usr/local/ssl/ を用意する
+  file:
+    path: /usr/local/ssl
+    state: directory
+    owner: "{{ nginx.owner }}"
+    group: "{{ nginx.group }}"
+    mode: 0700
+
+- name: Let's Encrypt 用秘密鍵を作る
+  openssl_privatekey:
+    path: /usr/local/ssl/letsencrypt-key.pem
+    type: RSA
+    size: 2048
+
+- stat: path=/usr/local/ssl/dhparam.pem
+  register: pemfile
+
+- name: dhparam.pem を作る
+  command: "/usr/bin/openssl dhparam 2048 -out /usr/local/ssl/dhparam.pem"
+  when: not pemfile.stat.exists
+
+- name: http-01 証明用のディレクトリを用意する
+  file:
+    path: "{{ acme_path }}"
+    state: directory
+    owner: "{{ nginx.owner }}"
+    group: "{{ nginx.group }}"
+  vars:
+    acme_path: "{{ nginx.webroot }}/letsencrypt/.well-known/acme-challenge"
+
+- name: http-01 証明用のファイルが外部から見えるように設定する
+  template: src=acme-challenge.conf.j2 dest=/etc/nginx/conf.d/acme-challenge.conf
+  vars:
+    domain: "{{ ' '.join(tls_domains) }}"
+
+- name: Nginx を再起動する
+  service: name=nginx state=restarted
+
+- include_tasks: cert.yml
+  with_items:
+    - "{{ tls_domains }}"
+  loop_control:
+    loop_var: domain
+
+- name: 使用済みの Nginx 設定ファイルを削除する
+  file:
+    path: /etc/nginx/conf.d/acme-challenge.conf
+    state: absent
+  notify: restart nginx
+
+

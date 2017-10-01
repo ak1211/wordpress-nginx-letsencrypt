@@ -1,0 +1,51 @@
+---
+- name: "{{ setup_user.name }} ユーザーの作成"
+  user:
+    name: "{{ setup_user.name }}"
+    uid: 1001
+    shell: /bin/bash
+    state: present
+    append: yes
+    groups: sudo
+
+- name: 公開鍵をリモートサーバーへ送る
+  authorized_key:
+    user: "{{ setup_user.name }}"
+    key: "{{ lookup('file', '{{ setup_user.pubkey }}') }}"
+    state: present
+
+- name: "{{ setup_user.name }} ユーザーはパスワード無しで sudo 出来るようにする"
+  lineinfile:
+    dest: /etc/sudoers.d/{{ setup_user.name }}
+    state: present
+    create: yes
+    regexp: "^{{ setup_user.name }} +"
+    line: "{{ setup_user.name }} ALL=(ALL:ALL) NOPASSWD:ALL"
+
+- name: ホスト名を {{ inventory_hostname }} に設定する
+  hostname: name={{ inventory_hostname }}
+
+- name: パスワード認証を禁止して公開鍵認証のみにする
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    state: present
+    regexp: "^PasswordAuthentication"
+    insertafter: "^#PasswordAuthentication"
+    line: "PasswordAuthentication no"
+  notify:
+    - restart sshd
+
+- name: rootログインを禁止する
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    state: present
+    regexp: "^{{ item.before }}"
+    insertafter: "^#{{ item.before }}"
+    line: "{{ item.after }}"
+  with_items:
+    - { before: "PermitRootLogin", after: "PermitRootLogin no" }
+    - { before: "UseLogin", after: "UseLogin no" }
+  notify:
+    - restart sshd
+
+

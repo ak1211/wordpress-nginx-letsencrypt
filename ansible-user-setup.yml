@@ -1,0 +1,10 @@
+---
+- hosts: all
+  remote_user: root
+  vars:
+    setup_user:
+      name: ansibleuser
+      pubkey: "{{ lookup('env','HOME') + '/.ssh/id_rsa.pub' }}"
+  roles:
+    - role: ansible-user-setup
+

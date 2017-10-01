@@ -1,0 +1,19 @@
+---
+- name: 必要なパッケージをインストールする
+  apt: name={{ item }} state=present update_cache=yes
+  with_items:
+    - nginx
+
+- name: WordPress用 Nginx 設定ファイルを配置する
+  template: src=nginx.conf.j2 dest=/etc/nginx/nginx.conf
+  notify: restart nginx
+
+- name: TCP ポート 80/443 (http/https) を開く
+  ufw:
+    rule: allow
+    name: Nginx Full
+
+- name: nginx サービスを起動する
+  service: name=nginx state=started enabled=yes
+
+

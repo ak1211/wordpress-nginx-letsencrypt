@@ -1,0 +1,28 @@
+server {
+    listen 80;
+    listen [::]:80;
+
+    server_name {{ domain }};
+
+    root /var/www/html;
+
+    location ^~ /.well-known/acme-challenge/ {
+        default_type "text/plain";
+        root /var/www/letsencrypt/;
+    }
+
+    location = /.well-known/acme-challenge/ {
+        return 404;
+    }
+
+    location = /BingSiteAuth\.xml {
+    }
+
+    error_page 404 /404.html;
+        location = /40x.html {
+    }
+
+    error_page 500 502 503 504 /50x.html;
+        location = /50x.html {
+    }
+}

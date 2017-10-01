@@ -1,0 +1,70 @@
+---
+- name: "{{ domain }} の秘密鍵を作る"
+  openssl_privatekey:
+    path: /usr/local/ssl/{{ domain }}-key.pem
+    type: RSA
+    size: 2048
+
+- name: "秘密鍵から証明書署名要求 (CSR) を作る"
+  openssl_csr:
+    path: /usr/local/ssl/{{ domain }}.csr
+    privatekey_path: /usr/local/ssl/{{ domain }}-key.pem
+    privatekey_passphrase:
+    country_name: JP
+    state_or_province_name:
+    locality_name:
+    organization_name:
+    organizational_unit_name:
+    email_address:
+    common_name: "{{ domain }}"
+    force: yes
+
+- name: 証明書署名要求を Let's Encrypt 認証局に提出する
+  letsencrypt:
+    account_email: "{{ admin_email }}"
+    account_key: /usr/local/ssl/letsencrypt-key.pem
+#    acme_directory: https://acme-v01.api.letsencrypt.org/directory
+    challenge: http-01
+    csr: /usr/local/ssl/{{ domain }}.csr
+    dest: /usr/local/ssl/{{ domain }}-cert.pem
+  register: le_challenge
+
+#- debug: var=le_challenge
+
+- name: http-01 証明用のファイルを配置する
+  copy:
+    dest: "{{ nginx.webroot }}/letsencrypt/{{ challenge_file_name }}"
+    content: "{{ challenge_file_content }}"
+    mode: 0644
+  vars:
+    challenge_file_name: "{{ le_challenge['challenge_data'][domain]['http-01']['resource'] }}"
+    challenge_file_content: "{{ le_challenge['challenge_data'][domain]['http-01']['resource_value'] }}"
+  when: le_challenge|changed
+
+- name: Let's Encrypt 認証局に http-01 証明の検証を依頼する
+  letsencrypt:
+    account_email: "{{ admin_email }}"
+    account_key: /usr/local/ssl/letsencrypt-key.pem
+#    acme_directory: https://acme-v01.api.letsencrypt.org/directory
+    challenge: http-01
+    csr: /usr/local/ssl/{{ domain }}.csr
+    dest: /usr/local/ssl/{{ domain }}-cert.pem
+    data: "{{ le_challenge }}"
+#  register: result
+
+#- debug: var=result
+
+- name: Nginx に {{ domain }} の設定をする
+  template: src=siteconf.j2 dest=/etc/nginx/sites-available/{{ domain }}
+  vars:
+    ssl_certificate: /usr/local/ssl/{{ domain }}-cert.pem
+    ssl_certificate_key: /usr/local/ssl/{{ domain }}-key.pem
+    ssl_dhparam: /usr/local/ssl/dhparam.pem
+
+- file:
+    src: /etc/nginx/sites-available/{{ domain }}
+    dest: /etc/nginx/sites-enabled/{{ domain }}
+    state: link
+  notify: restart nginx
+
+

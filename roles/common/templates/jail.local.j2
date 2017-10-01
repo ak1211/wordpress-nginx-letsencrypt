@@ -1,0 +1,9 @@
+[DEFAULT]
+destemail = {{ admin_email }}
+sender = root@{{ inventory_hostname }}
+
+[sshd]
+enabled = true
+
+[sshd-ddos]
+enabled = true

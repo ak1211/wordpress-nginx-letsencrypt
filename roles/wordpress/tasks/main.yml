@@ -1,0 +1,68 @@
+---
+- name: 必要なパッケージをインストールする
+  apt: name={{ item }} state=present update_cache=yes
+  with_items:
+    - python-pip
+    - libmysqlclient-dev
+
+- pip: name={{ item }} state=present
+  with_items:
+    - MySQL-python
+
+- name: WordPress データーベースを作成する
+  mysql_db:
+    name: "{{ wordpress.db_name }}"
+    collation: utf8_general_ci
+    state: present
+
+- name: WordPress データーベースユーザーを作成する
+  mysql_user:
+    name: "{{ wordpress.db_user }}"
+    password: "{{ wordpress.db_password }}"
+    priv: "{{ wordpress.db_name }}.*:ALL"
+    host: localhost
+    state: present
+
+- name: 作業用のディレクトリを作る
+  tempfile:
+    state: directory
+    prefix: ansible-work
+  register: work
+
+- name: WordPress {{ wordpress.version }}.tar.gz のダウンロード
+  get_url:
+    url: http://wordpress.org/wordpress-{{ wordpress.version }}.tar.gz
+    dest: "{{ work.path }}/wordpress-{{ wordpress.version }}.tar.gz"
+    checksum: "{{ wordpress.checksum }}"
+
+- name: WordPress {{ wordpress.version }} を {{ nginx.webroot }}/wordpress へ配置する
+  unarchive:
+    src: "{{ work.path }}/wordpress-{{ wordpress.version }}.tar.gz"
+    dest: "{{ nginx.webroot }}"
+    copy: no
+
+- name: wordpress.org の秘密鍵生成サービスから認証キーを得る
+  register: wp_salt
+  uri:
+    url: https://api.wordpress.org/secret-key/1.1/salt/
+    status_code: 200
+    return_content: yes
+
+- name: "{{ nginx.webroot }}/wordpress/wp-config.php の設定をする"
+  template:
+    src: wp-config.php.j2
+    dest: "{{ nginx.webroot }}/wordpress/wp-config.php"
+    mode: 0600
+
+- name: "{{ nginx.webroot }}/wordpress フォルダの所有権を {{ nginx.owner }}:{{ nginx.group }} に設定する"
+  file:
+    path: "{{ nginx.webroot }}/wordpress"
+    owner: "{{ nginx.owner }}"
+    group: "{{ nginx.group }}"
+    state: directory
+    recurse: yes
+    setype: httpd_sys_content_t
+
+- name: Start php7.0-fpm Service
+  service: name=php7.0-fpm state=started enabled=yes
+

@@ -1,0 +1,41 @@
+---
+- name: 基本パッケージをインストールする
+  apt: name={{ item }} state=present update_cache=yes
+  with_items:
+    - apparmor-profiles
+    - apparmor-utils
+    - ufw
+    - language-pack-ja
+    - zsh
+    - git
+    - vim
+    - tmux
+    - htop
+    - tree
+    - curl
+    - wget
+    - rsync
+    - fail2ban
+
+- name: タイムゾーンを Asia/Tokyo にする
+  timezone: name="Asia/Tokyo"
+
+- name: エディタをvimにする
+  alternatives: name=editor path=/usr/bin/vim.basic
+
+- name: ファイアウォールを設定する
+  ufw:
+    state: enabled
+    rule: allow
+    name: OpenSSH
+
+- name: fail2ban 設定ファイルを配置する
+  template: src={{ item.src }} dest={{ item.dest }} owner=root group=root mode=0644
+  with_items:
+    - { src: jail.local.j2, dest: /etc/fail2ban/jail.d/jail.local }
+  notify: restart fail2ban
+
+- name: fail2ban サービスを起動する
+  service: name=fail2ban state=started enabled=yes
+
+
