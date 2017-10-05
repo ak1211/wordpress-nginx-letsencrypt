@@ -15,6 +15,7 @@
     - curl
     - wget
     - rsync
+    - ssmtp
     - fail2ban
 
 - name: タイムゾーンを Asia/Tokyo にする
