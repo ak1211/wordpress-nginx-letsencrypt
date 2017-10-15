@@ -2,7 +2,7 @@
 This playbook is based on [ansible-examples](https://github.com/ansible/ansible-examples/blob/master/wordpress-nginx), and [Original licence](https://github.com/ansible/ansible-examples/blob/master/wordpress-nginx/LICENSE.md).
 
 # Overview
-Ansible playbook to Install WordPress, MariaDB, PHP7, Nginx on Ubuntu Server.  
+Ansible playbook to Install WordPress-ja, MariaDB, PHP7, Nginx on Ubuntu Server.  
 Set to HTTPS on "Let's Encrypt" module.
 
 # Requirements
