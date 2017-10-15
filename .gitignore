@@ -1,0 +1,5 @@
+production
+group_vars/*.yml
+*.retry
+*.swp
+.*.un~
