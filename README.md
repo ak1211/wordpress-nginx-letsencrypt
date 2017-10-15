@@ -1,9 +1,20 @@
-# wordpress-nginx-letsencrypt
-Ansible playbook to Install WordPress, Nginx and Let'sEncrypt
+# Ansible playbook "wordpress-nginx-letsencrypt"
+This playbook is based on [ansible-examples](https://github.com/ansible/ansible-examples/blob/master/wordpress-nginx), and [Original licence](https://github.com/ansible/ansible-examples/blob/master/wordpress-nginx/LICENSE.md).
 
-このPlaybookは https://github.com/ansible/ansible-examples/tree/master/wordpress-nginx を参考にして作られた物です。
+# Overview
+Ansible playbook to Install WordPress, MariaDB, PHP7, Nginx on Ubuntu Server.
+Set to HTTPS on "Let's Encrypt" module.
 
-元はCentOS用でこちらはUbuntu Server用にしたので、ディレクトリ構成以外のほぼ全てを新規作成した物ですが、
-一応念のために参考元のライセンスを表示しておきます。
+# Usage
+Edit group_vars/all.yml.example and Save as group_vars/all.yml file.  
+Edit production.example and Save as production.yml file.  
 
-https://github.com/ansible/ansible-examples/blob/master/wordpress-nginx/LICENSE.md
+First step ONLY.  
+$ ansible-playbook -i production ansible-user-setup.yml  
+
+To setup server
+$ ansible-playbook -i production site.yml
+
+Easy to setup WordPress!
+
+[Blog](https://ak1211.com/4968)
