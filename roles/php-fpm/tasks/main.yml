@@ -22,6 +22,7 @@
     - { before: "default_charset", after: 'default_charset = "UTF-8"' }
     - { before: "mbstring.language", after: "mbstring.language = Japanese" }
     - { before: "date.timezone", after: 'date.timezone = "Asia/Tokyo"' }
+    - { before: "sendmail_path", after: 'sendmail_path = /usr/sbin/sendmail -t -i' }
   notify:
     - restart php7.0-fpm
 
