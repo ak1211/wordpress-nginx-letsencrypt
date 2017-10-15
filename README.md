@@ -18,7 +18,7 @@ Expects below commands before run playbooks.
 
 ```
 $ ssh-agent bash  
-$ ssh-add "private key file"  
+$ ssh-add "PRIVATE KEY FILE"  
 ```
 
 First step ONLY.  
