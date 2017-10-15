@@ -6,7 +6,8 @@ Ansible playbook to Install WordPress, MariaDB, PHP7, Nginx on Ubuntu Server.
 Set to HTTPS on "Let's Encrypt" module.
 
 # Requirements
-Ansible 2.4 or later.
+Ansible 2.4 or newer.
+Remote host where Ubuntu server is installed.
 
 # Usage
 Edit group_vars/all.yml.example and Save as group_vars/all.yml file.  
