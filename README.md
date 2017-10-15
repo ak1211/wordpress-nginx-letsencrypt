@@ -12,7 +12,7 @@ Edit production.example and Save as production.yml file.
 First step ONLY.  
 $ ansible-playbook -i production ansible-user-setup.yml  
 
-To setup server
+To setup server  
 $ ansible-playbook -i production site.yml
 
 Easy to setup WordPress!
