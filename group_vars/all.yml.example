@@ -16,7 +16,7 @@ mariadb:
 
 wordpress:
   version: 4.8.2
-  checksum: sha1:a99115b3b6d6d7a1eb6c5617d4e8e704ed50f450
+  checksum: md5:38f302bf2e340ea1bebb93d0a2b89119
   db_name: wordpressdb
   db_user: wordpress
   db_password: "BadP@ssw0rd"
