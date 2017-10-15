@@ -30,6 +30,14 @@
     rule: allow
     name: OpenSSH
 
+- name: ssmtp 設定ファイルを配置する
+  template:
+    src: ssmtp.conf.j2
+    dest: /etc/ssmtp/ssmtp.conf
+    owner: root
+    group: root
+    mode: 0600
+
 - name: fail2ban 設定ファイルを配置する
   template: src={{ item.src }} dest={{ item.dest }} owner=root group=root mode=0644
   with_items:
@@ -38,5 +46,4 @@
 
 - name: fail2ban サービスを起動する
   service: name=fail2ban state=started enabled=yes
-
 

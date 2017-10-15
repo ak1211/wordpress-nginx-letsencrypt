@@ -29,15 +29,15 @@
     prefix: ansible-work
   register: work
 
-- name: WordPress {{ wordpress.version }}.tar.gz のダウンロード
+- name: https://ja.wordpress.org/releases/{{ wordpress.version }}-ja.tar.gz のダウンロード
   get_url:
-    url: http://wordpress.org/wordpress-{{ wordpress.version }}.tar.gz
-    dest: "{{ work.path }}/wordpress-{{ wordpress.version }}.tar.gz"
+    url: http://ja.wordpress.org/wordpress-{{ wordpress.version }}-ja.tar.gz
+    dest: "{{ work.path }}/wordpress-{{ wordpress.version }}-ja.tar.gz"
     checksum: "{{ wordpress.checksum }}"
 
 - name: WordPress {{ wordpress.version }} を {{ nginx.webroot }}/wordpress へ配置する
   unarchive:
-    src: "{{ work.path }}/wordpress-{{ wordpress.version }}.tar.gz"
+    src: "{{ work.path }}/wordpress-{{ wordpress.version }}-ja.tar.gz"
     dest: "{{ nginx.webroot }}"
     copy: no
 

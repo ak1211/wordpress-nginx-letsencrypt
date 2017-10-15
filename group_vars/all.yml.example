@@ -1,9 +1,15 @@
 ---
 tls_domains:
-  - conoha.ak1211.com
-#  - www.ak1211.com
+  - www01.host.com
+  - www02.host.com
 
-admin_email: ak1211@mail.ak1211.com
+admin_email: administrator@mail.host.com
+
+ssmtp:
+  mailhub: mail.host.com:587 
+  rewriteDomain: mail.host.com
+  authuser: mail_username
+  authpass: BadP@ssw0rd
 
 mariadb:
   root_password: "BadP@ssw0rd"

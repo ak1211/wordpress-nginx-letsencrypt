@@ -4,7 +4,7 @@
   vars:
     setup_user:
       name: ansibleuser
-      pubkey: "{{ lookup('env','HOME') + '/.ssh/id_rsa.pub' }}"
+      pubkey: "{{ lookup('env','ANSIBLE_PUBKEY') }}" #ANSIBLE_PUBKEY 環境変数から設定する
   roles:
     - role: ansible-user-setup
 

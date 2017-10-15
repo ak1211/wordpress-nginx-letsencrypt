@@ -1,48 +1,54 @@
 <?php
 /**
- * The base configuration for WordPress
+ * WordPress の基本設定
  *
- * The wp-config.php creation script uses this file during the
- * installation. You don't have to use the web site, you can
- * copy this file to "wp-config.php" and fill in the values.
+ * このファイルは、インストール時に wp-config.php 作成ウィザードが利用します。
+ * ウィザードを介さずにこのファイルを "wp-config.php" という名前でコピーして
+ * 直接編集して値を入力してもかまいません。
  *
- * This file contains the following configurations:
+ * このファイルは、以下の設定を含みます。
  *
- * * MySQL settings
- * * Secret keys
- * * Database table prefix
+ * * MySQL 設定
+ * * 秘密鍵
+ * * データベーステーブル接頭辞
  * * ABSPATH
  *
- * @link https://codex.wordpress.org/Editing_wp-config.php
+ * @link http://wpdocs.sourceforge.jp/wp-config.php_%E3%81%AE%E7%B7%A8%E9%9B%86
  *
  * @package WordPress
  */
 
-// ** MySQL settings - You can get this info from your web host ** //
-/** The name of the database for WordPress */
+// 注意: 
+// Windows の "メモ帳" でこのファイルを編集しないでください !
+// 問題なく使えるテキストエディタ
+// (http://wpdocs.sourceforge.jp/Codex:%E8%AB%87%E8%A9%B1%E5%AE%A4 参照)
+// を使用し、必ず UTF-8 の BOM なし (UTF-8N) で保存してください。
+
+// ** MySQL 設定 - この情報はホスティング先から入手してください。 ** //
+/** WordPress のためのデータベース名 */
 define('DB_NAME', '{{ wordpress.db_name }}');
 
-/** MySQL database username */
+/** MySQL データベースのユーザー名 */
 define('DB_USER', '{{ wordpress.db_user }}');
 
-/** MySQL database password */
+/** MySQL データベースのパスワード */
 define('DB_PASSWORD', '{{ wordpress.db_password }}');
 
-/** MySQL hostname */
+/** MySQL のホスト名 */
 define('DB_HOST', 'localhost');
 
-/** Database Charset to use in creating database tables. */
+/** データベースのテーブルを作成する際のデータベースの文字セット */
 define('DB_CHARSET', 'utf8');
 
-/** The Database Collate type. Don't change this if in doubt. */
+/** データベースの照合順序 (ほとんどの場合変更する必要はありません) */
 define('DB_COLLATE', '');
 
 /**#@+
- * Authentication Unique Keys and Salts.
+ * 認証用ユニークキー
  *
- * Change these to different unique phrases!
- * You can generate these using the {@link https://api.wordpress.org/secret-key/1.1/salt/ WordPress.org secret-key service}
- * You can change these at any point in time to invalidate all existing cookies. This will force all users to have to log in again.
+ * それぞれを異なるユニーク (一意) な文字列に変更してください。
+ * {@link https://api.wordpress.org/secret-key/1.1/salt/ WordPress.org の秘密鍵サービス} で自動生成することもできます。
+ * 後でいつでも変更して、既存のすべての cookie を無効にできます。これにより、すべてのユーザーを強制的に再ログインさせることになります。
  *
  * @since 2.6.0
  */
@@ -50,28 +56,26 @@ define('DB_COLLATE', '');
 /**#@-*/
 
 /**
- * WordPress Database Table prefix.
+ * WordPress データベーステーブルの接頭辞
  *
- * You can have multiple installations in one database if you give each
- * a unique prefix. Only numbers, letters, and underscores please!
+ * それぞれにユニーク (一意) な接頭辞を与えることで一つのデータベースに複数の WordPress を
+ * インストールすることができます。半角英数字と下線のみを使用してください。
  */
 $table_prefix  = 'wp_';
 
 /**
- * For developers: WordPress debugging mode.
+ * 開発者へ: WordPress デバッグモード
  *
- * Change this to true to enable the display of notices during development.
- * It is strongly recommended that plugin and theme developers use WP_DEBUG
- * in their development environments.
+ * この値を true にすると、開発中に注意 (notice) を表示します。
+ * テーマおよびプラグインの開発者には、その開発環境においてこの WP_DEBUG を使用することを強く推奨します。
  *
- * For information on other constants that can be used for debugging,
- * visit the Codex.
+ * その他のデバッグに利用できる定数については Codex をご覧ください。
  *
- * @link https://codex.wordpress.org/Debugging_in_WordPress
+ * @link http://wpdocs.osdn.jp/WordPress%E3%81%A7%E3%81%AE%E3%83%87%E3%83%90%E3%83%83%E3%82%B0
  */
 define('WP_DEBUG', false);
 
-/* That's all, stop editing! Happy blogging. */
+/* 編集が必要なのはここまでです ! WordPress でブログをお楽しみください。 */
 
 /** Absolute path to the WordPress directory. */
 if ( !defined('ABSPATH') )
