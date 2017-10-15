@@ -11,6 +11,10 @@ Ansible 2.4 or later.
 # Usage
 Edit group_vars/all.yml.example and Save as group_vars/all.yml file.  
 Edit production.example and Save as production.yml file.  
+Set "ANSIBLE_PUBKEY" environment variable to public key file path.
+
+$ ssh-agent bash  
+$ ssh-add "private key file"  
 
 First step ONLY.  
 $ ansible-playbook -i production ansible-user-setup.yml  
