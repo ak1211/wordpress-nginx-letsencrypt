@@ -8,6 +8,7 @@
     - php-enchant
     - php-mbstring
     - php-mysql
+    - php-curl
 
 - name: WordPress 用 php の設定をする
   lineinfile:
